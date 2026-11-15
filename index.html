@@ -16,14 +16,11 @@
 *{box-sizing:border-box;margin:0}
 body{background:var(--bg);color:var(--text);font-family:var(--ui);line-height:1.45;min-height:100vh}
 .wrap{max-width:1040px;margin:0 auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:var(--gap)}
-header{padding:8px 0 0}
-.badge{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.ball{width:16px;height:16px;border-radius:50%;background:var(--accent);position:relative;display:inline-block}
-.ball:before{content:"";position:absolute;inset:0;border-radius:50%;background:
-  radial-gradient(circle at 30% 35%,var(--bg) 0 1.3px,transparent 1.6px),
-  radial-gradient(circle at 68% 30%,var(--bg) 0 1.3px,transparent 1.6px),
-  radial-gradient(circle at 50% 68%,var(--bg) 0 1.3px,transparent 1.6px)}
-h1{font-family:var(--disp);font-weight:800;font-size:clamp(38px,9vw,64px);line-height:1;margin:8px 0 0;text-transform:uppercase;letter-spacing:.01em}
+header{display:flex;align-items:center;gap:14px;padding:8px 0 0}
+.logo{width:60px;height:60px;flex:none}
+.b1,h1{font-family:var(--disp);font-weight:800;font-size:22px;line-height:1.15;text-transform:uppercase;letter-spacing:.06em;margin:0}
+.b1{color:var(--muted)}
+h1 span{color:#9ca3af}
 
 .setup{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
 .srow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
@@ -99,8 +96,29 @@ h1{font-family:var(--disp);font-weight:800;font-size:clamp(38px,9vw,64px);line-h
 <body>
 <div class="wrap">
   <header>
-    <div class="badge"><span class="ball"></span> Match schedule</div>
-    <h1>Pickleball</h1>
+    <svg class="logo" viewBox="0 0 128 128" aria-hidden="true" focusable="false">
+      <g transform="rotate(35 64 64)">
+        <rect x="55" y="70" width="18" height="40" rx="6" fill="#6B7280"/>
+        <rect x="55" y="96" width="18" height="14" rx="6" fill="#4B5563"/>
+        <path d="M55 82h18M55 88h18M55 94h18" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>
+        <rect x="35" y="8" width="58" height="68" rx="24" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="5"/>
+        <path d="M48 28c0-7 6-12 14-12" fill="none" stroke="#9CA3AF" stroke-width="3" stroke-linecap="round" opacity=".45"/>
+        <g fill="#9CA3AF" opacity=".7">
+          <circle cx="64" cy="26" r="2"/><circle cx="54" cy="38" r="2"/><circle cx="74" cy="38" r="2"/>
+          <circle cx="64" cy="50" r="2"/><circle cx="54" cy="62" r="2"/><circle cx="74" cy="62" r="2"/>
+        </g>
+      </g>
+      <circle cx="101" cy="103" r="16" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="2.5"/>
+      <g fill="#9CA3AF">
+        <circle cx="101" cy="95" r="2.4"/><circle cx="93" cy="103" r="2.4"/><circle cx="109" cy="103" r="2.4"/>
+        <circle cx="101" cy="111" r="2.4"/><circle cx="95.5" cy="97.5" r="1.8"/><circle cx="106.5" cy="97.5" r="1.8"/>
+        <circle cx="95.5" cy="108.5" r="1.8"/><circle cx="106.5" cy="108.5" r="1.8"/>
+      </g>
+    </svg>
+    <div>
+      <div class="b1">Match schedule</div>
+      <h1>Pickle<span>ball</span></h1>
+    </div>
   </header>
 
   <section class="setup" aria-label="Enter players">
