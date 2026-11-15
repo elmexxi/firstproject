@@ -37,10 +37,10 @@ h1{font-family:var(--disp);font-weight:800;font-size:clamp(38px,9vw,64px);line-h
 .empty b{display:block;font-family:var(--disp);font-size:26px;color:var(--text);margin-bottom:4px;text-transform:uppercase}
 .names{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 @media(min-width:640px){.names{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.nm{min-width:0;display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px 10px}
+.nm{min-width:0;display:flex;align-items:center;gap:8px;background:linear-gradient(var(--pbg,transparent),var(--pbg,transparent)),var(--bg);border:1px solid transparent;border-radius:12px;padding:6px 10px}
 .nm:focus-within{border-color:var(--accent)}
-.nm .av{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#0d1a2b}
-.nm input{flex:1;width:100%;min-width:0;background:none;border:0;outline:0;color:var(--text);font:500 15px var(--ui);padding:4px 0}
+.nm .av{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--pfg,var(--line));color:#0d1a2b}
+.nm input{flex:1;width:100%;min-width:0;background:none;border:0;outline:0;color:var(--pfg,var(--text));font:500 15px var(--ui);padding:4px 0}
 .nm input::placeholder{color:var(--muted)}
 
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
@@ -72,13 +72,14 @@ h1{font-family:var(--disp);font-weight:800;font-size:clamp(38px,9vw,64px);line-h
 .filter::-webkit-scrollbar{display:none}
 .chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:8px 14px;font:600 14px var(--ui);cursor:pointer}
 .chip[aria-pressed=true]{background:var(--accent);color:#0d1a2b;border-color:var(--accent)}
+.chip.pl{border-color:transparent}
+.chip.pl[aria-pressed=true]{box-shadow:0 0 0 2px var(--accent)}
 .info{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:2px 0 14px;font-size:14px;display:none}
 .info.on{display:block}
 .info b{color:var(--accent)}
 .grid{display:grid;gap:12px;grid-template-columns:1fr}
 @media(min-width:700px){.grid{grid-template-columns:1fr 1fr}}
 .game{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;position:relative;transition:opacity .2s,border-color .2s}
-.game.dim{opacity:.38}
 .top{margin-bottom:10px}
 .num{font-family:var(--disp);font-weight:700;font-size:22px;letter-spacing:.04em}
 .court{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);column-gap:12px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px}
@@ -192,7 +193,7 @@ function hint(){
 }
 function renderNames(){
   const el=$("names");
-  el.innerHTML=inputs.map((v,i)=>`<label class="nm"><span class="av" style="background:var(--line);color:var(--text)">${i+1}</span><input type="text" maxlength="14" data-i="${i}" placeholder="Player ${i+1}" value="${esc(v)}" aria-label="Name of player ${i+1}"></label>`).join("");
+  el.innerHTML=inputs.map((v,i)=>`<label class="nm" style="--pbg:${col(i+1).bg};--pfg:${col(i+1).fg}"><span class="av">${i+1}</span><input type="text" maxlength="14" data-i="${i}" placeholder="Player ${i+1}" value="${esc(v)}" aria-label="Name of player ${i+1}"></label>`).join("");
   el.querySelectorAll("input").forEach(inp=>{
     inp.oninput=()=>{inputs[+inp.dataset.i]=inp.value;save();hint()};
     inp.onkeydown=e=>{if(e.key==="Enter")generate()};
@@ -234,7 +235,7 @@ function renderStats(){
 function renderFilter(){
   const f=document.getElementById("filter");
   f.innerHTML=`<button class="chip" aria-pressed="${sel===0}" data-p="0">All</button>`+
-   ALL.map(i=>`<button class="chip" aria-pressed="${sel===i}" data-p="${i}">${esc(name(i))}</button>`).join("");
+   ALL.map(i=>`<button class="chip pl" aria-pressed="${sel===i}" data-p="${i}" style="background:${col(i).bg};color:${col(i).fg}">${esc(name(i))}</button>`).join("");
   f.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{sel=+b.dataset.p;render()});
 }
 function renderInfo(){
@@ -248,8 +249,8 @@ function renderInfo(){
 function renderGrid(){
   document.getElementById("grid").innerHTML=GAMES.map(([a,b],k)=>{
     const pl=[...a,...b], pa=ALL.filter(x=>!pl.includes(x));
-    const dim=sel&&!pl.includes(sel);
-    return `<article class="game${dim?' dim':''}">
+    if(sel&&!pl.includes(sel))return "";
+    return `<article class="game">
       <div class="top"><div class="num">Game ${k+1}</div></div>
       <div class="court">
         <div class="team">${a.map(i=>pill(i,i===sel)).join("")}</div>
