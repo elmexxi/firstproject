@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en" translate="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Spielplan 2 gegen 2</title>
+<meta name="google" content="notranslate">
+<title>Pickleball</title>
 <style>
 :root{
   --bg:#0d1a2b; --card:#15273d; --card2:#1b3250; --line:#26405f;
@@ -103,16 +104,16 @@ h1 span{color:var(--lime)}
 <body>
 <div class="wrap">
   <header>
-    <div class="badge"><span class="ball"></span> Sport-Crew · Doppel</div>
-    <h1>Spielplan <span>2 vs 2</span></h1>
+    <div class="badge"><span class="ball"></span> Sport Crew · Doubles</div>
+    <h1>Pickle<span>ball</span></h1>
     <p class="sub" id="sub"></p>
   </header>
 
-  <section class="setup" aria-label="Spieler eintragen">
-    <div class="srow"><span class="slabel">Spieler · 4 bis 6 Namen eintragen</span></div>
+  <section class="setup" aria-label="Enter players">
+    <div class="srow"><span class="slabel">Players · enter 4 to 6 names</span></div>
     <div class="names" id="names"></div>
     <div class="genrow">
-      <button class="gen" id="gen">Spielplan generieren</button>
+      <button class="gen" id="gen">Generate schedule</button>
       <span class="msg" id="msg" aria-live="polite"></span>
     </div>
   </section>
@@ -121,36 +122,36 @@ h1 span{color:var(--lime)}
     <div class="tdisp" id="tdisp" role="timer" aria-live="off">15:00</div>
     <div class="tbtns">
       <button class="primary" id="tstart">Start</button>
-      <button id="tstop" disabled>Stopp</button>
-      <button id="treset">Zurücksetzen</button>
+      <button id="tstop" disabled>Stop</button>
+      <button id="treset">Reset</button>
     </div>
     <div class="tbar"><i id="tfill"></i></div>
   </section>
 
-  <div class="empty" id="empty"><b>Noch kein Spielplan</b>Trag oben mindestens 4 Namen ein und klicke auf „Spielplan generieren".</div>
+  <div class="empty" id="empty"><b>No schedule yet</b>Enter at least 4 names above and click “Generate schedule”.</div>
 
   <div id="plan" hidden>
   <section class="stats" aria-label="Fairness">
-    <div class="stat"><b id="s-play"></b><small>Spiele pro Person</small></div>
-    <div class="stat"><b id="s-pause"></b><small>Pausen pro Person</small></div>
-    <div class="stat"><b id="s-team"></b><small>jedes Paar als Team</small></div>
-    <div class="stat"><b id="s-opp"></b><small>jedes Paar als Gegner</small></div>
+    <div class="stat"><b id="s-play"></b><small>Games per player</small></div>
+    <div class="stat"><b id="s-pause"></b><small>Sit-outs per player</small></div>
+    <div class="stat"><b id="s-team"></b><small>each pair as partners</small></div>
+    <div class="stat"><b id="s-opp"></b><small>each pair as opponents</small></div>
   </section>
 
-  <nav class="filter" id="filter" aria-label="Spieler wählen"></nav>
+  <nav class="filter" id="filter" aria-label="Choose player"></nav>
   <div class="info" id="info"></div>
   <main class="grid" id="grid"></main>
 
   <div class="foot">
-    <span>Tipp: Haken setzen, sobald ein Spiel gespielt ist.</span>
-    <button class="reset" id="reset">Haken zurücksetzen</button>
+    <span>Tip: tick a game once it has been played.</span>
+    <button class="reset" id="reset">Reset ticks</button>
   </div>
   </div>
 </div>
 
 <script>
 const COLORS=["#c6f135","#4cc9f0","#ff7a2f","#ff4d8d","#ffd23f","#a98bff"];
-// Fertige, faire Durchgänge. Spielerindizes 1-basiert: [Team A, Team B]
+// Ready-made fair rounds. Player indices are 1-based: [Team A, Team B]
 const SCHEDULES={
   4:[[[1,2],[3,4]],[[1,3],[2,4]],[[1,4],[2,3]]],
   5:[[[2,5],[3,4]],[[1,3],[4,5]],[[2,4],[1,5]],[[3,5],[1,2]],[[1,4],[2,3]]],
@@ -179,18 +180,18 @@ const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&qu
 const pill=(i,hl)=>`<div class="p${hl?' hl':''}"><span class="av" style="background:${col(i)}">${esc(ini(i))}</span><em>${esc(name(i))}</em></div>`;
 const mini=(i,hl)=>`<span class="mini${hl?' hl':''}"><span style="background:${col(i)}">${esc(ini(i))}</span>${esc(name(i))}</span>`;
 
-// ---- Einrichtung ----
+// ---- Setup ----
 const filled=()=>inputs.map(s=>s.trim()).filter(Boolean);
 function setMsg(t,err){const m=$("msg");m.textContent=t;m.className="msg"+(err?" err":"")}
 function hint(){
   if(!N){setMsg("",false);return}
   const f=filled();
   const changed=f.length!==players.length||f.some((x,i)=>x!==players[i]);
-  setMsg(changed?"Namen geändert – zum Übernehmen neu generieren.":"",false);
+  setMsg(changed?"Names changed – generate again to apply.":"",false);
 }
 function renderNames(){
   const el=$("names");
-  el.innerHTML=inputs.map((v,i)=>`<label class="nm"><span class="av" style="background:var(--line);color:var(--text)">${i+1}</span><input type="text" maxlength="14" data-i="${i}" placeholder="Spieler ${i+1}" value="${esc(v)}" aria-label="Name Spieler ${i+1}"></label>`).join("");
+  el.innerHTML=inputs.map((v,i)=>`<label class="nm"><span class="av" style="background:var(--line);color:var(--text)">${i+1}</span><input type="text" maxlength="14" data-i="${i}" placeholder="Player ${i+1}" value="${esc(v)}" aria-label="Name of player ${i+1}"></label>`).join("");
   el.querySelectorAll("input").forEach(inp=>{
     inp.oninput=()=>{inputs[+inp.dataset.i]=inp.value;save();hint()};
     inp.onkeydown=e=>{if(e.key==="Enter")generate()};
@@ -198,16 +199,16 @@ function renderNames(){
 }
 function showPlan(){
   $("plan").hidden=!N;$("empty").hidden=!!N;
-  if(!N)$("sub").textContent="Namen eintragen und Spielplan generieren";
+  if(!N)$("sub").textContent="Enter names and generate the schedule";
 }
 function generate(){
   const f=filled();
-  if(f.length<4){setMsg("Bitte mindestens 4 Namen eintragen.",true);return}
-  if(new Set(f.map(s=>s.toLowerCase())).size!==f.length){setMsg("Jeder Name darf nur einmal vorkommen.",true);return}
+  if(f.length<4){setMsg("Please enter at least 4 names.",true);return}
+  if(new Set(f.map(s=>s.toLowerCase())).size!==f.length){setMsg("Each name may only appear once.",true);return}
   players=f;N=f.length;sel=0;done={};applyN();save();setMsg("",false);showPlan();render();
 }
 
-// ---- Fairness-Kennzahlen, direkt aus dem Plan berechnet ----
+// ---- Fairness figures, calculated directly from the schedule ----
 function calcStats(){
   const pl={},pa={},op={};
   ALL.forEach(i=>{pl[i]=0});
@@ -229,13 +230,13 @@ function renderStats(){
   document.getElementById("s-opp").textContent=s.opp+"×";
   const k=N-4;
   document.getElementById("sub").textContent=
-    `${N} Spieler · ${GAMES.length} Spiele · `+(k?`${k} pausier${k===1?"t":"en"} pro Spiel`:"alle spielen jedes Spiel");
+    `${N} players · ${GAMES.length} games · `+(k?`${k} sitting out per game`:"everyone plays every game");
 }
 
-// ---- Anzeige ----
+// ---- Display ----
 function renderFilter(){
   const f=document.getElementById("filter");
-  f.innerHTML=`<button class="chip" aria-pressed="${sel===0}" data-p="0">Alle</button>`+
+  f.innerHTML=`<button class="chip" aria-pressed="${sel===0}" data-p="0">All</button>`+
    ALL.map(i=>`<button class="chip" aria-pressed="${sel===i}" data-p="${i}"><i style="background:${col(i)}"></i>${esc(name(i))}</button>`).join("");
   f.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{sel=+b.dataset.p;render()});
 }
@@ -245,21 +246,21 @@ function renderInfo(){
   const played=[],sat=[];
   GAMES.forEach(([a,b],k)=>{(a.includes(sel)||b.includes(sel)?played:sat).push(k+1)});
   el.className="info on";
-  el.innerHTML=`<b>${esc(name(sel))}</b> spielt in `+(sat.length?`den Spielen ${played.join(", ")} und pausiert in ${sat.join(", ")}.`:`allen ${played.length} Spielen.`);
+  el.innerHTML=`<b>${esc(name(sel))}</b> `+(sat.length?`plays in games ${played.join(", ")} and sits out in ${sat.join(", ")}.`:`plays in all ${played.length} games.`);
 }
 function renderGrid(){
   document.getElementById("grid").innerHTML=GAMES.map(([a,b],k)=>{
     const pl=[...a,...b], pa=ALL.filter(x=>!pl.includes(x));
     const dim=sel&&!pl.includes(sel);
     return `<article class="game${dim?' dim':''}${done[k]?' done':''}">
-      <div class="top"><div class="num">Spiel ${k+1}<small>${k+1} / ${GAMES.length}</small></div>
-        <button class="check" data-k="${k}" aria-label="Spiel ${k+1} gespielt">✓</button></div>
+      <div class="top"><div class="num">Game ${k+1}<small>${k+1} / ${GAMES.length}</small></div>
+        <button class="check" data-k="${k}" aria-label="Game ${k+1} played">✓</button></div>
       <div class="court">
         <div class="team">${a.map(i=>pill(i,i===sel)).join("")}</div>
         <div class="vs">VS</div>
         <div class="team">${b.map(i=>pill(i,i===sel)).join("")}</div>
       </div>
-      ${pa.length?`<div class="pause"><span class="tag">Pause</span>${pa.map(i=>mini(i,i===sel)).join("")}</div>`:""}
+      ${pa.length?`<div class="pause"><span class="tag">Sitting out</span>${pa.map(i=>mini(i,i===sel)).join("")}</div>`:""}
     </article>`}).join("");
   document.querySelectorAll(".check").forEach(b=>b.onclick=()=>{const k=b.dataset.k;done[k]=!done[k];save();renderGrid()});
 }
@@ -268,7 +269,7 @@ document.getElementById("reset").onclick=()=>{done={};save();renderGrid()};
 $("gen").onclick=generate;
 renderNames();showPlan();if(N){render();hint()}
 
-// ---- Timer (15 Minuten, zeitstempelbasiert, driftet nicht bei gedrosseltem Tab) ----
+// ---- Timer (15 minutes, timestamp-based, does not drift in a throttled tab) ----
 const DUR=15*60*1000;
 let remaining=DUR, endAt=0, iv=null, actx=null;
 function beep(){
@@ -290,7 +291,7 @@ function showTimer(){
   const running=iv!==null;
   $("tstart").disabled=running;
   $("tstop").disabled=!running;
-  $("tstart").textContent=(!running&&remaining<DUR&&remaining>0)?"Weiter":"Start";
+  $("tstart").textContent=(!running&&remaining<DUR&&remaining>0)?"Resume":"Start";
 }
 function tick(){
   remaining=endAt-Date.now();
