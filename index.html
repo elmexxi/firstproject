@@ -52,6 +52,7 @@ h1 span{color:var(--lime)}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
 .stat b{display:block;font-family:var(--disp);font-size:34px;font-weight:700;color:var(--lime);line-height:1}
 .stat small{color:var(--muted);font-size:12.5px}
+@media(max-width:639px){.stats{grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.stat{padding:6px 7px;border-radius:10px}.stat b{font-size:20px}.stat small{font-size:10px;line-height:1.2;display:block}}
 
 .timer{position:sticky;top:8px;z-index:5;background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:0 0 14px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:grid;grid-template-columns:1fr;gap:10px;justify-items:center}
 .trow{display:flex;align-items:center;justify-content:center;gap:16px}
