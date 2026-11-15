@@ -271,7 +271,43 @@ renderNames();showPlan();if(N){render();hint()}
 
 // ---- Timer (15 minutes, timestamp-based, does not drift in a throttled tab) ----
 const DUR=15*60*1000;
-let remaining=DUR, endAt=0, iv=null, actx=null;
+let remaining=DUR, endAt=0, iv=null, actx=null, au=null, auUrl=null, auOk=false;
+// Alarm as a real audio file: silence until the deadline, then 3 beeps. Because the phone
+// treats it like background music, the beeps can sound even when the screen is locked.
+function makeAlarmWav(ms){
+  const sr=4000, secs=Math.ceil(ms/1000)+2, n=sr*secs, data=new Uint8Array(n).fill(128);
+  const t0=Math.round(ms/1000*sr);
+  [0,0.35,0.7].forEach(off=>{
+    const st=t0+Math.round(off*sr), len=Math.round(0.25*sr);
+    for(let i=0;i<len&&st+i<n;i++){
+      const env=Math.min(1,i/40,(len-i)/40);
+      data[st+i]=128+Math.round(110*env*Math.sin(2*Math.PI*880*i/sr));
+    }
+  });
+  const buf=new ArrayBuffer(44+n), v=new DataView(buf);
+  const w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+  w(0,"RIFF");v.setUint32(4,36+n,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);
+  v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr,true);
+  v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,"data");v.setUint32(40,n,true);
+  new Uint8Array(buf,44).set(data);
+  return URL.createObjectURL(new Blob([buf],{type:"audio/wav"}));
+}
+function stopAlarmAudio(){
+  try{if(au){au.pause();au.removeAttribute("src");au=null}if(auUrl){URL.revokeObjectURL(auUrl);auUrl=null}}catch(e){}
+  auOk=false;
+}
+function startAlarmAudio(){
+  stopAlarmAudio();
+  try{
+    auUrl=makeAlarmWav(remaining);au=new Audio(auUrl);au.preload="auto";
+    const p=au.play();if(p&&p.then)p.then(()=>{auOk=true}).catch(()=>{auOk=false});
+    if("mediaSession" in navigator){
+      navigator.mediaSession.metadata=new MediaMetadata({title:"Pickleball timer",artist:"Match schedule"});
+      navigator.mediaSession.setActionHandler("pause",()=>$("tstop").click());
+      navigator.mediaSession.setActionHandler("play",()=>$("tstart").click());
+    }
+  }catch(e){}
+}
 function beep(){
   try{
     if(!actx)return;
@@ -298,7 +334,7 @@ function tick(){
   if(remaining<=0){
     remaining=0;clearInterval(iv);iv=null;
     $("timer").classList.add("over");
-    beep();try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}
+    if(!auOk)beep();try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}
   }
   showTimer();
 }
@@ -309,15 +345,16 @@ $("tstart").onclick=()=>{
   $("timer").classList.remove("over");
   endAt=Date.now()+remaining;
   iv=setInterval(tick,250);
+  startAlarmAudio();
   showTimer();
 };
 $("tstop").onclick=()=>{
   if(iv===null)return;
   remaining=Math.max(0,endAt-Date.now());
-  clearInterval(iv);iv=null;showTimer();
+  clearInterval(iv);iv=null;stopAlarmAudio();showTimer();
 };
 $("treset").onclick=()=>{
-  clearInterval(iv);iv=null;remaining=DUR;
+  clearInterval(iv);iv=null;stopAlarmAudio();remaining=DUR;
   $("timer").classList.remove("over");showTimer();
 };
 showTimer();
