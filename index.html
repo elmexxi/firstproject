@@ -8,32 +8,28 @@
 <style>
 :root{
   --bg:#0d1a2b; --card:#15273d; --card2:#1b3250; --line:#26405f;
-  --text:#f3f7fb; --muted:#9db3cc; --lime:#c6f135; --orange:#ff7a2f;
+  --text:#f3f7fb; --muted:#9db3cc; --accent:#f3f7fb; --orange:#ff7a2f;
   --disp:"Arial Narrow","Roboto Condensed","Segoe UI",system-ui,sans-serif;
   --ui:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
 }
 *{box-sizing:border-box;margin:0}
-body{background:var(--bg);color:var(--text);font-family:var(--ui);line-height:1.45;
-  background-image:radial-gradient(circle at 85% -10%,rgba(198,241,53,.14),transparent 45%),radial-gradient(circle at -10% 20%,rgba(255,122,47,.10),transparent 40%);
-  min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:var(--ui);line-height:1.45;min-height:100vh}
 .wrap{max-width:1040px;margin:0 auto;padding:20px 16px 48px}
 header{padding:12px 0 14px}
-.badge{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime)}
-.ball{width:16px;height:16px;border-radius:50%;background:var(--lime);position:relative;display:inline-block}
+.badge{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ball{width:16px;height:16px;border-radius:50%;background:var(--accent);position:relative;display:inline-block}
 .ball:before{content:"";position:absolute;inset:0;border-radius:50%;background:
   radial-gradient(circle at 30% 35%,var(--bg) 0 1.3px,transparent 1.6px),
   radial-gradient(circle at 68% 30%,var(--bg) 0 1.3px,transparent 1.6px),
   radial-gradient(circle at 50% 68%,var(--bg) 0 1.3px,transparent 1.6px)}
 h1{font-family:var(--disp);font-weight:800;font-size:clamp(38px,9vw,64px);line-height:1;margin:8px 0 6px;text-transform:uppercase;letter-spacing:.01em}
-h1 span{color:var(--lime)}
-.sub{color:var(--muted);font-size:15px}
 
 .setup{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:6px 0 4px}
 .srow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .slabel{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 [hidden]{display:none!important}
 .genrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
-.gen{background:var(--lime);color:#0d1a2b;border:0;border-radius:999px;padding:12px 22px;font:700 16px var(--ui);cursor:pointer}
+.gen{background:var(--accent);color:#0d1a2b;border:0;border-radius:999px;padding:12px 22px;font:700 16px var(--ui);cursor:pointer}
 .gen:active{transform:scale(.98)}
 .msg{font-size:13.5px;color:var(--muted)}
 .msg.err{color:var(--orange)}
@@ -42,7 +38,7 @@ h1 span{color:var(--lime)}
 .names{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 @media(min-width:640px){.names{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .nm{min-width:0;display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px 10px}
-.nm:focus-within{border-color:var(--lime)}
+.nm:focus-within{border-color:var(--accent)}
 .nm .av{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#0d1a2b}
 .nm input{flex:1;width:100%;min-width:0;background:none;border:0;outline:0;color:var(--text);font:500 15px var(--ui);padding:4px 0}
 .nm input::placeholder{color:var(--muted)}
@@ -50,22 +46,22 @@ h1 span{color:var(--lime)}
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
 @media(min-width:640px){.stats{grid-template-columns:repeat(4,1fr)}}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
-.stat b{display:block;font-family:var(--disp);font-size:34px;font-weight:700;color:var(--lime);line-height:1}
+.stat b{display:block;font-family:var(--disp);font-size:34px;font-weight:700;color:var(--accent);line-height:1}
 .stat small{color:var(--muted);font-size:12.5px}
 @media(max-width:639px){.stats{grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.stat{padding:6px 7px;border-radius:10px}.stat b{font-size:20px}.stat small{font-size:10px;line-height:1.2;display:block}}
 
 .timer{position:sticky;top:8px;z-index:5;background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:0 0 14px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:grid;grid-template-columns:1fr;gap:10px;justify-items:center}
 .trow{display:flex;align-items:center;justify-content:center;gap:16px}
-.tdisp{font-family:var(--disp);font-weight:800;font-size:56px;line-height:1;color:var(--lime);font-variant-numeric:tabular-nums;min-width:2.6em;text-align:center}
+.tdisp{font-family:var(--disp);font-weight:800;font-size:56px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;min-width:2.6em;text-align:center}
 .tadj{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);font:600 28px/1 var(--ui);cursor:pointer;display:grid;place-items:center;padding:0}
 .tadj:active{transform:scale(.95)}
 .tadj:disabled{opacity:.4;cursor:default}
 .tbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .tbtns button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:8px 14px;font:600 14px var(--ui);cursor:pointer}
-.tbtns button.primary{background:var(--lime);color:#0d1a2b;border-color:var(--lime)}
+.tbtns button.primary{background:var(--accent);color:#0d1a2b;border-color:var(--accent)}
 .tbtns button:disabled{opacity:.4;cursor:default}
 .tbar{width:100%;height:6px;border-radius:99px;background:var(--bg);overflow:hidden}
-.tbar i{display:block;height:100%;width:100%;background:var(--lime);transition:width .25s linear}
+.tbar i{display:block;height:100%;width:100%;background:var(--accent);transition:width .25s linear}
 .timer.over{border-color:var(--orange);animation:flash .7s ease-in-out infinite alternate}
 .timer.over .tdisp{color:var(--orange)}
 .timer.over .tbar i{background:var(--orange)}
@@ -74,31 +70,25 @@ h1 span{color:var(--lime)}
 
 .filter{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none}
 .filter::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:8px 14px;font:600 14px var(--ui);cursor:pointer;display:flex;align-items:center;gap:7px}
-.chip i{width:10px;height:10px;border-radius:50%;display:inline-block}
-.chip[aria-pressed=true]{background:var(--lime);color:#0d1a2b;border-color:var(--lime)}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:8px 14px;font:600 14px var(--ui);cursor:pointer}
+.chip[aria-pressed=true]{background:var(--accent);color:#0d1a2b;border-color:var(--accent)}
 .info{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:2px 0 14px;font-size:14px;display:none}
 .info.on{display:block}
-.info b{color:var(--lime)}
+.info b{color:var(--accent)}
 .grid{display:grid;gap:12px;grid-template-columns:1fr}
 @media(min-width:700px){.grid{grid-template-columns:1fr 1fr}}
 .game{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;position:relative;transition:opacity .2s,border-color .2s}
 .game.dim{opacity:.38}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.top{margin-bottom:10px}
 .num{font-family:var(--disp);font-weight:700;font-size:22px;letter-spacing:.04em}
-.num small{color:var(--muted);font-size:13px;font-weight:600;margin-left:6px;letter-spacing:.08em;text-transform:uppercase;font-family:var(--ui)}
-.court{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 8px}
-.team{display:flex;flex-direction:column;gap:6px;align-items:stretch}
-.vs{font-family:var(--disp);font-weight:800;color:var(--orange);font-size:18px}
-.p{display:flex;align-items:center;gap:7px;border-radius:999px;padding:4px 10px 4px 4px;background:var(--card);font-weight:600;font-size:14px;min-width:0}
-.p span.av{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#0d1a2b}
-.p em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.p.hl{outline:2px solid var(--lime)}
-.pause{margin-top:10px;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
-.pause .tag{font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:var(--orange)}
-.pause .mini{display:inline-flex;align-items:center;gap:5px;color:var(--text);font-weight:500}
-.pause .mini span{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;color:#0d1a2b}
-.pause .mini.hl{outline:2px solid var(--orange);border-radius:999px;padding-right:6px}
+.court{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);column-gap:12px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px}
+.team{display:flex;flex-direction:column;gap:7px;min-width:0}
+.vs{font-size:15px;font-weight:500;color:var(--muted)}
+.p{border-radius:999px;padding:9px 10px;font-size:16px;font-weight:500;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.p.hl,.mini.hl{box-shadow:0 0 0 2px var(--accent)}
+.pause{margin-top:10px;display:flex;align-items:center;gap:6px 8px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.pause .tag{font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:var(--muted)}
+.mini{border-radius:999px;padding:4px 12px;font-size:13px;font-weight:500}
 .privacy{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.5}
 .privacy a{color:var(--muted);text-decoration:underline}
 </style>
@@ -107,7 +97,7 @@ h1 span{color:var(--lime)}
 <div class="wrap">
   <header>
     <div class="badge"><span class="ball"></span> Match schedule</div>
-    <h1>Pickle<span>ball</span></h1>
+    <h1>Pickleball</h1>
   </header>
 
   <section class="setup" aria-label="Enter players">
@@ -154,7 +144,15 @@ h1 span{color:var(--lime)}
 </div>
 
 <script>
-const COLORS=["#c6f135","#4cc9f0","#ff7a2f","#ff4d8d","#ffd23f","#a98bff"];
+// One soft colour per player (none of them is the white UI accent): background, text.
+const COLORS=[
+  {bg:"rgba(76,201,240,.20)",fg:"#bfeafa"},
+  {bg:"rgba(255,122,47,.22)",fg:"#ffd0b3"},
+  {bg:"rgba(255,77,141,.22)",fg:"#ffc4da"},
+  {bg:"rgba(169,139,255,.24)",fg:"#dcd2ff"},
+  {bg:"rgba(46,196,166,.22)",fg:"#b8efe3"},
+  {bg:"rgba(255,210,63,.20)",fg:"#ffec9e"}
+];
 // Ready-made fair rounds. Player indices are 1-based: [Team A, Team B]
 const SCHEDULES={
   4:[[[1,2],[3,4]],[[1,3],[2,4]],[[1,4],[2,3]]],
@@ -179,10 +177,9 @@ applyN();
 
 const name=i=>players[i-1];
 const col=i=>COLORS[i-1];
-const ini=i=>[...name(i)][0].toUpperCase();
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const pill=(i,hl)=>`<div class="p${hl?' hl':''}"><span class="av" style="background:${col(i)}">${esc(ini(i))}</span><em>${esc(name(i))}</em></div>`;
-const mini=(i,hl)=>`<span class="mini${hl?' hl':''}"><span style="background:${col(i)}">${esc(ini(i))}</span>${esc(name(i))}</span>`;
+const pill=(i,hl)=>`<div class="p${hl?' hl':''}" style="background:${col(i).bg};color:${col(i).fg}">${esc(name(i))}</div>`;
+const mini=(i,hl)=>`<span class="mini${hl?' hl':''}" style="background:${col(i).bg};color:${col(i).fg}">${esc(name(i))}</span>`;
 
 // ---- Setup ----
 const filled=()=>inputs.map(s=>s.trim()).filter(Boolean);
@@ -237,7 +234,7 @@ function renderStats(){
 function renderFilter(){
   const f=document.getElementById("filter");
   f.innerHTML=`<button class="chip" aria-pressed="${sel===0}" data-p="0">All</button>`+
-   ALL.map(i=>`<button class="chip" aria-pressed="${sel===i}" data-p="${i}"><i style="background:${col(i)}"></i>${esc(name(i))}</button>`).join("");
+   ALL.map(i=>`<button class="chip" aria-pressed="${sel===i}" data-p="${i}">${esc(name(i))}</button>`).join("");
   f.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{sel=+b.dataset.p;render()});
 }
 function renderInfo(){
@@ -253,13 +250,13 @@ function renderGrid(){
     const pl=[...a,...b], pa=ALL.filter(x=>!pl.includes(x));
     const dim=sel&&!pl.includes(sel);
     return `<article class="game${dim?' dim':''}">
-      <div class="top"><div class="num">Game ${k+1}<small>${k+1} / ${GAMES.length}</small></div></div>
+      <div class="top"><div class="num">Game ${k+1}</div></div>
       <div class="court">
         <div class="team">${a.map(i=>pill(i,i===sel)).join("")}</div>
-        <div class="vs">VS</div>
+        <div class="vs">vs</div>
         <div class="team">${b.map(i=>pill(i,i===sel)).join("")}</div>
       </div>
-      ${pa.length?`<div class="pause"><span class="tag">Sitting out</span>${pa.map(i=>mini(i,i===sel)).join("")}</div>`:""}
+      ${pa.length?`<div class="pause"><span class="tag">Pause</span>${pa.map(i=>mini(i,i===sel)).join("")}</div>`:""}
     </article>`}).join("");
 }
 function render(){renderStats();renderFilter();renderInfo();renderGrid()}
