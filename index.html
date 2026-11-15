@@ -106,7 +106,6 @@ h1 span{color:var(--lime)}
   <header>
     <div class="badge"><span class="ball"></span> Match schedule</div>
     <h1>Pickle<span>ball</span></h1>
-    <p class="sub" id="sub"></p>
   </header>
 
   <section class="setup" aria-label="Enter players">
@@ -198,7 +197,6 @@ function renderNames(){
 }
 function showPlan(){
   $("plan").hidden=!N;$("empty").hidden=!!N;
-  if(!N)$("sub").textContent="Enter names and generate the schedule";
 }
 function generate(){
   const f=filled();
@@ -227,9 +225,6 @@ function renderStats(){
   document.getElementById("s-pause").textContent=s.pause;
   document.getElementById("s-team").textContent=s.team+"×";
   document.getElementById("s-opp").textContent=s.opp+"×";
-  const k=N-4;
-  document.getElementById("sub").textContent=
-    `${N} players · ${GAMES.length} games · `+(k?`${k} sitting out per game`:"everyone plays every game");
 }
 
 // ---- Display ----
