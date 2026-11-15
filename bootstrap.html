@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" translate="no" data-bs-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google" content="notranslate">
+<title>Pickleball (Bootstrap)</title>
+<!-- Bootstrap 5.3.3 (MIT licence, https://getbootstrap.com). Loaded from jsDelivr and pinned with an integrity hash. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<style>
+/* ---- Pickleball theme: only design tokens and a few custom components on top of Bootstrap ---- */
+[data-bs-theme=dark]{
+  --bs-body-bg:#0d1a2b; --bs-body-color:#f3f7fb;
+  --bs-secondary-color:#9db3cc; --bs-secondary-color-rgb:157,179,204;
+  --bs-tertiary-bg:#15273d; --bs-tertiary-bg-rgb:21,39,61;
+  --bs-secondary-bg:#1b3250; --bs-secondary-bg-rgb:27,50,80;
+  --bs-border-color:#26405f;
+  --bs-primary:#c6f135; --bs-primary-rgb:198,241,53;
+  --bs-warning:#ff7a2f; --bs-warning-rgb:255,122,47;
+  --bs-link-color:#c6f135; --bs-link-hover-color:#d4f55f;
+  --pb-display:"Arial Narrow","Roboto Condensed","Segoe UI",system-ui,sans-serif;
+}
+body{min-height:100vh;
+  background-image:radial-gradient(circle at 85% -10%,rgba(198,241,53,.14),transparent 45%),radial-gradient(circle at -10% 20%,rgba(255,122,47,.10),transparent 40%);
+  background-attachment:fixed}
+.card{--bs-card-bg:var(--bs-tertiary-bg);--bs-card-border-color:var(--bs-border-color);--bs-card-border-radius:1rem}
+.btn-primary{--bs-btn-color:#0d1a2b;--bs-btn-bg:#c6f135;--bs-btn-border-color:#c6f135;
+  --bs-btn-hover-color:#0d1a2b;--bs-btn-hover-bg:#d4f55f;--bs-btn-hover-border-color:#d4f55f;
+  --bs-btn-active-color:#0d1a2b;--bs-btn-active-bg:#b3dd2c;--bs-btn-active-border-color:#b3dd2c;
+  --bs-btn-disabled-color:#0d1a2b;--bs-btn-disabled-bg:#c6f135;--bs-btn-disabled-border-color:#c6f135;
+  --bs-btn-focus-shadow-rgb:198,241,53}
+.alert{--bs-alert-bg:var(--bs-secondary-bg);--bs-alert-color:var(--bs-body-color);--bs-alert-border-color:var(--bs-border-color)}
+.progress{--bs-progress-bg:var(--bs-body-bg);--bs-progress-bar-bg:var(--bs-primary);--bs-progress-height:6px}
+.progress-bar{transition:width .25s linear}
+.pb-display{font-family:var(--pb-display)}
+.pb-caps{text-transform:uppercase;letter-spacing:.12em}
+.pb-av{flex:none;display:grid;place-items:center;border-radius:50%;font-weight:700;color:#0d1a2b}
+
+/* header */
+.pb-badge{font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--bs-primary);display:inline-flex;align-items:center;gap:.5rem}
+.pb-ball{width:16px;height:16px;border-radius:50%;background:var(--bs-primary);position:relative;display:inline-block}
+.pb-ball:before{content:"";position:absolute;inset:0;border-radius:50%;background:
+  radial-gradient(circle at 30% 35%,var(--bs-body-bg) 0 1.3px,transparent 1.6px),
+  radial-gradient(circle at 68% 30%,var(--bs-body-bg) 0 1.3px,transparent 1.6px),
+  radial-gradient(circle at 50% 68%,var(--bs-body-bg) 0 1.3px,transparent 1.6px)}
+.pb-title{font-family:var(--pb-display);font-weight:800;font-size:clamp(2.4rem,9vw,4rem);line-height:1;text-transform:uppercase;letter-spacing:.01em}
+
+/* timer */
+.pb-timer{--bs-card-bg:var(--bs-secondary-bg);position:sticky;top:.5rem;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.pb-tdisp{font-family:var(--pb-display);font-weight:800;font-size:3.5rem;line-height:1;font-variant-numeric:tabular-nums;min-width:2.6em;text-align:center;color:var(--bs-primary)}
+.pb-tadj{width:48px;height:48px;padding:0;display:grid;place-items:center;font-size:1.75rem;line-height:1}
+.pb-timer.over{border-color:var(--bs-warning);animation:pb-flash .7s ease-in-out infinite alternate}
+.pb-timer.over .pb-tdisp{color:var(--bs-warning)}
+.pb-timer.over .progress{--bs-progress-bar-bg:var(--bs-warning)}
+@keyframes pb-flash{from{background-color:var(--bs-secondary-bg)}to{background-color:#4a2a18}}
+@media(max-width:420px){.pb-tdisp{font-size:2.875rem}}
+
+/* stats: one compact row on phones */
+.pb-stat-num{font-family:var(--pb-display);font-weight:700;color:var(--bs-primary);line-height:1;font-size:1.25rem}
+.pb-stat-label{color:var(--bs-secondary-color);font-size:.625rem;line-height:1.2}
+@media(min-width:640px){.pb-stat-num{font-size:2.125rem}.pb-stat-label{font-size:.78rem}}
+
+/* player filter (Bootstrap nav-pills, re-coloured) */
+.pb-filter{scrollbar-width:none}
+.pb-filter::-webkit-scrollbar{display:none}
+.pb-filter .nav-link{background:var(--bs-tertiary-bg);border:1px solid var(--bs-border-color);color:var(--bs-body-color);font-weight:600;font-size:.875rem;padding:.4rem .9rem;display:flex;align-items:center;gap:.45rem;white-space:nowrap}
+.pb-filter .nav-link.active{background:var(--bs-primary);border-color:var(--bs-primary);color:#0d1a2b}
+.pb-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+/* games */
+.pb-game.dim{opacity:.38}
+.pb-court{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.5rem;background:var(--bs-body-bg);border:1px solid var(--bs-border-color);border-radius:.75rem;padding:.6rem .5rem}
+.pb-team{display:flex;flex-direction:column;gap:.375rem;align-items:stretch}
+.pb-vs{font-family:var(--pb-display);font-weight:800;color:var(--bs-warning);font-size:1.125rem}
+.pb-pill{display:flex;align-items:center;gap:.45rem;border-radius:999px;padding:.25rem .6rem .25rem .25rem;background:var(--bs-tertiary-bg);font-weight:600;font-size:.875rem;min-width:0}
+.pb-pill em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pb-pill.hl{outline:2px solid var(--bs-primary)}
+.pb-mini.hl{outline:2px solid var(--bs-warning);border-radius:999px;padding-right:.375rem}
+</style>
+</head>
+<body>
+<div class="container py-3 py-md-4" style="max-width:1040px">
+  <header class="py-3">
+    <div class="pb-badge"><span class="pb-ball"></span> Match schedule</div>
+    <h1 class="pb-title mt-2 mb-0">Pickle<span class="text-primary">ball</span></h1>
+  </header>
+
+  <section class="card mb-3" aria-label="Enter players">
+    <div class="card-body">
+      <div class="pb-caps small fw-semibold text-body-secondary mb-3">Players · enter 4 to 6 names</div>
+      <div class="row row-cols-2 row-cols-md-3 g-2" id="names"></div>
+      <div class="d-flex align-items-center flex-wrap gap-3 mt-3">
+        <button class="btn btn-primary btn-lg rounded-pill px-4 fw-bold" id="gen">Generate schedule</button>
+        <span class="small text-body-secondary" id="msg" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card pb-timer mb-3" id="timer" aria-label="Timer">
+    <div class="card-body d-flex flex-column align-items-center gap-2 p-3">
+      <div class="d-flex align-items-center justify-content-center gap-3">
+        <button class="btn btn-outline-secondary rounded-circle pb-tadj" id="tminus" aria-label="Decrease time by 1 minute">−</button>
+        <div class="pb-tdisp" id="tdisp" role="timer" aria-live="off">15:00</div>
+        <button class="btn btn-outline-secondary rounded-circle pb-tadj" id="tplus" aria-label="Increase time by 1 minute">+</button>
+      </div>
+      <div class="d-flex flex-wrap justify-content-center gap-2">
+        <button class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold" id="tstart">Start</button>
+        <button class="btn btn-outline-light btn-sm rounded-pill px-3 fw-semibold" id="tstop" disabled>Stop</button>
+        <button class="btn btn-outline-light btn-sm rounded-pill px-3 fw-semibold" id="treset">Reset</button>
+      </div>
+      <div class="progress w-100" role="progressbar" aria-label="Time remaining"><div class="progress-bar" id="tfill" style="width:100%"></div></div>
+    </div>
+  </section>
+
+  <div class="rounded-4 p-4 text-center text-body-secondary mt-3" id="empty" style="border:1px dashed var(--bs-border-color)">
+    <div class="pb-display fs-3 fw-bold text-uppercase text-body">No schedule yet</div>
+    Enter at least 4 names above and click “Generate schedule”.
+  </div>
+
+  <div id="plan" hidden>
+    <section class="row row-cols-4 g-2 g-md-3 my-1" aria-label="Fairness">
+      <div class="col"><div class="card h-100"><div class="card-body p-2 p-md-3"><div class="pb-stat-num" id="s-play"></div><div class="pb-stat-label">Games per player</div></div></div></div>
+      <div class="col"><div class="card h-100"><div class="card-body p-2 p-md-3"><div class="pb-stat-num" id="s-pause"></div><div class="pb-stat-label">Sit-outs per player</div></div></div></div>
+      <div class="col"><div class="card h-100"><div class="card-body p-2 p-md-3"><div class="pb-stat-num" id="s-team"></div><div class="pb-stat-label">each pair as partners</div></div></div></div>
+      <div class="col"><div class="card h-100"><div class="card-body p-2 p-md-3"><div class="pb-stat-num" id="s-opp"></div><div class="pb-stat-label">each pair as opponents</div></div></div></div>
+    </section>
+
+    <nav class="nav nav-pills pb-filter flex-nowrap overflow-auto gap-2 py-3" id="filter" aria-label="Choose player"></nav>
+    <div class="alert d-none py-2 px-3 small" id="info"></div>
+    <main class="row row-cols-1 row-cols-md-2 g-3" id="grid"></main>
+  </div>
+</div>
+
+<script>
+const COLORS=["#c6f135","#4cc9f0","#ff7a2f","#ff4d8d","#ffd23f","#a98bff"];
+// Ready-made fair rounds. Player indices are 1-based: [Team A, Team B]
+const SCHEDULES={
+  4:[[[1,2],[3,4]],[[1,3],[2,4]],[[1,4],[2,3]]],
+  5:[[[2,5],[3,4]],[[1,3],[4,5]],[[2,4],[1,5]],[[3,5],[1,2]],[[1,4],[2,3]]],
+  6:[[[3,6],[4,5]],[[5,6],[1,2]],[[1,4],[2,3]],[[4,6],[2,5]],[[3,6],[1,4]],
+     [[3,5],[1,2]],[[1,6],[2,4]],[[2,6],[3,5]],[[1,3],[4,5]],[[2,6],[3,4]],
+     [[5,6],[1,3]],[[2,4],[1,5]],[[1,6],[2,3]],[[2,5],[3,4]],[[4,6],[1,5]]]
+};
+const $=id=>document.getElementById(id);
+let N=0, players=[], inputs=Array(6).fill(""), sel=0, GAMES=[], ALL=[];
+// This Bootstrap copy keeps its own saved data, separate from the original page.
+const NKEY="pickleball-bs-names-v1", TKEY="pickleball-bs-timer-v1";
+try{
+  const s=JSON.parse(localStorage.getItem(NKEY)||"null");
+  if(s){
+    if(Array.isArray(s.inputs))inputs=Array.from({length:6},(_,i)=>typeof s.inputs[i]==="string"?s.inputs[i].slice(0,14):"");
+    if(Array.isArray(s.players)&&s.players.length>=4&&s.players.length<=6&&s.players.every(x=>typeof x==="string")){players=s.players;N=players.length}
+  }
+}catch(e){}
+function save(){try{localStorage.setItem(NKEY,JSON.stringify({inputs,players}))}catch(e){}}
+function applyN(){GAMES=N?SCHEDULES[N]:[];ALL=Array.from({length:N},(_,i)=>i+1)}
+applyN();
+
+const name=i=>players[i-1];
+const col=i=>COLORS[i-1];
+const ini=i=>[...name(i)][0].toUpperCase();
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const av=(i,size,fs)=>`<span class="pb-av" style="width:${size}px;height:${size}px;font-size:${fs}px;background:${col(i)}">${esc(ini(i))}</span>`;
+const pill=(i,hl)=>`<div class="pb-pill${hl?' hl':''}">${av(i,24,12)}<em>${esc(name(i))}</em></div>`;
+const mini=(i,hl)=>`<span class="pb-mini d-inline-flex align-items-center gap-1 text-body fw-medium${hl?' hl':''}">${av(i,18,10)}${esc(name(i))}</span>`;
+
+// ---- Setup ----
+const filled=()=>inputs.map(s=>s.trim()).filter(Boolean);
+function setMsg(t,err){const m=$("msg");m.textContent=t;m.classList.toggle("text-warning",!!err);m.classList.toggle("text-body-secondary",!err)}
+function hint(){
+  if(!N){setMsg("",false);return}
+  const f=filled();
+  const changed=f.length!==players.length||f.some((x,i)=>x!==players[i]);
+  setMsg(changed?"Names changed – generate again to apply.":"",false);
+}
+function renderNames(){
+  const el=$("names");
+  el.innerHTML=inputs.map((v,i)=>`<div class="col"><div class="input-group"><span class="input-group-text">${i+1}</span><input type="text" class="form-control" maxlength="14" data-i="${i}" placeholder="Player ${i+1}" value="${esc(v)}" aria-label="Name of player ${i+1}"></div></div>`).join("");
+  el.querySelectorAll("input").forEach(inp=>{
+    inp.oninput=()=>{inputs[+inp.dataset.i]=inp.value;save();hint()};
+    inp.onkeydown=e=>{if(e.key==="Enter")generate()};
+  });
+}
+function showPlan(){
+  $("plan").hidden=!N;$("empty").hidden=!!N;
+}
+function generate(){
+  const f=filled();
+  if(f.length<4){setMsg("Please enter at least 4 names.",true);return}
+  if(new Set(f.map(s=>s.toLowerCase())).size!==f.length){setMsg("Each name may only appear once.",true);return}
+  players=f;N=f.length;sel=0;applyN();save();setMsg("",false);showPlan();render();
+}
+
+// ---- Fairness figures, calculated directly from the schedule ----
+function calcStats(){
+  const pl={},pa={},op={};
+  ALL.forEach(i=>{pl[i]=0});
+  for(let a=1;a<=N;a++)for(let b=a+1;b<=N;b++){pa[a+"-"+b]=0;op[a+"-"+b]=0}
+  const key=(x,y)=>Math.min(x,y)+"-"+Math.max(x,y);
+  GAMES.forEach(([A,B])=>{
+    [...A,...B].forEach(i=>pl[i]++);
+    pa[key(...A)]++;pa[key(...B)]++;
+    A.forEach(x=>B.forEach(y=>op[key(x,y)]++));
+  });
+  const rng=o=>{const v=Object.values(o);const lo=Math.min(...v),hi=Math.max(...v);return lo===hi?String(lo):lo+"–"+hi};
+  return{play:rng(pl),pause:rng(Object.fromEntries(Object.entries(pl).map(([k,v])=>[k,GAMES.length-v]))),team:rng(pa),opp:rng(op)};
+}
+function renderStats(){
+  const s=calcStats();
+  $("s-play").textContent=s.play;
+  $("s-pause").textContent=s.pause;
+  $("s-team").textContent=s.team+"×";
+  $("s-opp").textContent=s.opp+"×";
+}
+
+// ---- Display ----
+function renderFilter(){
+  const f=$("filter");
+  const btn=(p,inner)=>`<button class="nav-link rounded-pill${sel===p?' active':''}" aria-pressed="${sel===p}" data-p="${p}">${inner}</button>`;
+  f.innerHTML=btn(0,"All")+ALL.map(i=>btn(i,`<span class="pb-dot" style="background:${col(i)}"></span>${esc(name(i))}`)).join("");
+  f.querySelectorAll(".nav-link").forEach(b=>b.onclick=()=>{sel=+b.dataset.p;render()});
+}
+function renderInfo(){
+  const el=$("info");
+  if(!sel){el.classList.add("d-none");el.innerHTML="";return}
+  const played=[],sat=[];
+  GAMES.forEach(([a,b],k)=>{(a.includes(sel)||b.includes(sel)?played:sat).push(k+1)});
+  el.classList.remove("d-none");
+  el.innerHTML=`<strong class="text-primary">${esc(name(sel))}</strong> `+(sat.length?`plays in games ${played.join(", ")} and sits out in ${sat.join(", ")}.`:`plays in all ${played.length} games.`);
+}
+function renderGrid(){
+  $("grid").innerHTML=GAMES.map(([a,b],k)=>{
+    const pl=[...a,...b], pa=ALL.filter(x=>!pl.includes(x));
+    const dim=sel&&!pl.includes(sel);
+    return `<div class="col"><article class="card h-100 pb-game${dim?' dim':''}"><div class="card-body">
+      <div class="pb-display fw-bold fs-4 mb-2">Game ${k+1}<small class="ms-2 fs-6 fw-semibold text-body-secondary pb-caps" style="font-family:var(--bs-body-font-family)">${k+1} / ${GAMES.length}</small></div>
+      <div class="pb-court">
+        <div class="pb-team">${a.map(i=>pill(i,i===sel)).join("")}</div>
+        <div class="pb-vs">VS</div>
+        <div class="pb-team">${b.map(i=>pill(i,i===sel)).join("")}</div>
+      </div>
+      ${pa.length?`<div class="d-flex flex-wrap align-items-center gap-2 mt-2 small text-body-secondary"><span class="text-warning text-uppercase fw-semibold" style="font-size:.7rem;letter-spacing:.08em">Sitting out</span>${pa.map(i=>mini(i,i===sel)).join("")}</div>`:""}
+    </div></article></div>`}).join("");
+}
+function render(){renderStats();renderFilter();renderInfo();renderGrid()}
+$("gen").onclick=generate;
+renderNames();showPlan();if(N){render();hint()}
+
+// ---- Timer (adjustable, timestamp-based, remembered across reloads) ----
+const MIN=60*1000, MAX=99*60*1000;
+let DUR=15*60*1000, remaining=DUR, endAt=0, iv=null, actx=null, au=null, auUrl=null, auOk=false;
+let resumeRun=false, wasOver=false;
+try{
+  const t=JSON.parse(localStorage.getItem(TKEY)||"null");
+  if(t&&typeof t==="object"){
+    if(Number.isFinite(t.dur)&&t.dur>=MIN&&t.dur<=MAX)DUR=Math.round(t.dur/1000)*1000;
+    remaining=DUR;
+    if(Number.isFinite(t.remaining))remaining=Math.min(MAX,Math.max(0,Math.round(t.remaining/1000)*1000));
+    if(t.running&&Number.isFinite(t.endAt)){endAt=t.endAt;remaining=Math.min(MAX,Math.max(0,endAt-Date.now()));resumeRun=true}
+    else if(t.over&&remaining<=0)wasOver=true;
+  }
+}catch(e){}
+function saveTimer(){
+  try{localStorage.setItem(TKEY,JSON.stringify({
+    dur:DUR,
+    remaining:iv!==null?Math.max(0,endAt-Date.now()):remaining,
+    running:iv!==null,
+    endAt:iv!==null?endAt:0,
+    over:$("timer").classList.contains("over")
+  }))}catch(e){}
+}
+// Alarm as a real audio file: silence until the deadline, then the sound "round_end.wav"
+// (or 3 beeps if that file is missing). Because the phone treats it like background music,
+// the sound can play even when the screen is locked.
+let jingle=null;
+function parseWav(buf){
+  const v=new DataView(buf);
+  if(buf.byteLength<44||v.getUint32(0)!==0x52494646)return null;
+  let off=12, ch=1, sr=44100, bits=16, dOff=0, dLen=0;
+  while(off+8<=buf.byteLength){
+    const id=v.getUint32(off), len=v.getUint32(off+4,true);
+    if(id===0x666d7420){ch=v.getUint16(off+10,true);sr=v.getUint32(off+12,true);bits=v.getUint16(off+22,true)}
+    else if(id===0x64617461){dOff=off+8;dLen=Math.min(len,buf.byteLength-dOff);break}
+    off+=8+len+(len&1);
+  }
+  if(bits!==16||!dLen||!ch||!sr)return null;
+  const frames=Math.floor(dLen/(2*ch)), OUT=11025, ratio=sr/OUT, outN=Math.floor(frames/ratio), out=new Int16Array(outN);
+  for(let i=0;i<outN;i++){
+    const s=Math.floor(i*ratio), e=Math.max(s+1,Math.min(frames,Math.floor((i+1)*ratio)));
+    let sum=0;
+    for(let k=s;k<e;k++)for(let c=0;c<ch;c++)sum+=v.getInt16(dOff+(k*ch+c)*2,true);
+    out[i]=Math.round(sum/((e-s)*ch));
+  }
+  return out;
+}
+fetch("round_end.wav").then(r=>r.ok?r.arrayBuffer():Promise.reject()).then(b=>{jingle=parseWav(b)}).catch(()=>{});
+function makeAlarmWav(ms){
+  const J=jingle, sr=J?11025:4000, bytes=J?2:1;
+  const secs=Math.ceil(ms/1000)+(J?Math.ceil(J.length/sr)+1:2), n=sr*secs;
+  const t0=Math.round(ms/1000*sr);
+  const buf=new ArrayBuffer(44+n*bytes), v=new DataView(buf);
+  if(J){
+    new Int16Array(buf,44,n).set(J.subarray(0,Math.max(0,Math.min(J.length,n-t0))),t0);
+  }else{
+    const data=new Uint8Array(buf,44,n).fill(128);
+    [0,0.35,0.7].forEach(off=>{
+      const st=t0+Math.round(off*sr), len=Math.round(0.25*sr);
+      for(let i=0;i<len&&st+i<n;i++){
+        const env=Math.min(1,i/40,(len-i)/40);
+        data[st+i]=128+Math.round(110*env*Math.sin(2*Math.PI*880*i/sr));
+      }
+    });
+  }
+  const w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+  w(0,"RIFF");v.setUint32(4,36+n*bytes,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);
+  v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*bytes,true);
+  v.setUint16(32,bytes,true);v.setUint16(34,8*bytes,true);w(36,"data");v.setUint32(40,n*bytes,true);
+  return URL.createObjectURL(new Blob([buf],{type:"audio/wav"}));
+}
+function stopAlarmAudio(){
+  try{if(au){au.pause();au.removeAttribute("src");au=null}if(auUrl){URL.revokeObjectURL(auUrl);auUrl=null}}catch(e){}
+  auOk=false;
+}
+function startAlarmAudio(){
+  stopAlarmAudio();
+  try{
+    auUrl=makeAlarmWav(remaining);au=new Audio(auUrl);au.preload="auto";
+    const p=au.play();if(p&&p.then)p.then(()=>{auOk=true}).catch(()=>{auOk=false});
+    if("mediaSession" in navigator){
+      navigator.mediaSession.metadata=new MediaMetadata({title:"Pickleball timer",artist:"Match schedule"});
+      navigator.mediaSession.setActionHandler("pause",()=>$("tstop").click());
+      navigator.mediaSession.setActionHandler("play",()=>$("tstart").click());
+    }
+  }catch(e){}
+}
+function beep(){
+  try{
+    if(!actx)return;
+    [0,0.35,0.7].forEach(t=>{
+      const o=actx.createOscillator(),g=actx.createGain();
+      o.type="sine";o.frequency.value=880;o.connect(g);g.connect(actx.destination);
+      const s=actx.currentTime+t;
+      g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.4,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.25);
+      o.start(s);o.stop(s+0.3);
+    });
+  }catch(e){}
+}
+function showTimer(){
+  const sec=Math.ceil(remaining/1000), m=String(Math.floor(sec/60)).padStart(2,"0"), s=String(sec%60).padStart(2,"0");
+  $("tdisp").textContent=m+":"+s;
+  $("tfill").style.width=(Math.min(1,remaining/DUR)*100)+"%";
+  const running=iv!==null, base=remaining>0?remaining:DUR;
+  $("tstart").disabled=running;
+  $("tstop").disabled=!running;
+  $("tminus").disabled=base<=MIN;
+  $("tplus").disabled=base>=MAX;
+  $("tstart").textContent=(!running&&remaining<DUR&&remaining>0)?"Resume":"Start";
+}
+function tick(){
+  remaining=endAt-Date.now();
+  if(remaining<=0){
+    remaining=0;clearInterval(iv);iv=null;
+    $("timer").classList.add("over");
+    if(!auOk)beep();try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}
+    saveTimer();
+  }
+  showTimer();
+}
+// + / - change the time by one minute (also while running)
+function adjust(d){
+  const idle=iv===null&&(remaining<=0||remaining===DUR);
+  const base=remaining>0?remaining:DUR;
+  const nr=Math.min(MAX,Math.max(MIN,base+d));
+  if(nr===base&&remaining>0)return;
+  $("timer").classList.remove("over");
+  remaining=nr;
+  if(idle||nr>DUR)DUR=nr;
+  if(iv!==null){endAt=Date.now()+remaining;startAlarmAudio()}
+  showTimer();saveTimer();
+}
+$("tminus").onclick=()=>adjust(-MIN);
+$("tplus").onclick=()=>adjust(MIN);
+$("tstart").onclick=()=>{
+  if(iv!==null)return;
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume&&actx.resume()}catch(e){}
+  if(remaining<=0)remaining=DUR;
+  $("timer").classList.remove("over");
+  endAt=Date.now()+remaining;
+  iv=setInterval(tick,250);
+  startAlarmAudio();
+  showTimer();saveTimer();
+};
+$("tstop").onclick=()=>{
+  if(iv===null)return;
+  remaining=Math.ceil(Math.max(0,endAt-Date.now())/1000)*1000;
+  clearInterval(iv);iv=null;stopAlarmAudio();showTimer();saveTimer();
+};
+$("treset").onclick=()=>{
+  clearInterval(iv);iv=null;stopAlarmAudio();remaining=DUR;
+  $("timer").classList.remove("over");showTimer();saveTimer();
+};
+// After a reload the browser blocks sound until the next tap: re-arm the alarm then.
+document.addEventListener("pointerdown",()=>{
+  if(iv!==null&&!auOk){
+    try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume&&actx.resume()}catch(e){}
+    startAlarmAudio();
+  }
+});
+if(resumeRun){
+  if(remaining>0){iv=setInterval(tick,250);startAlarmAudio()}
+  else{$("timer").classList.add("over");saveTimer()}
+}else if(wasOver){$("timer").classList.add("over")}
+showTimer();
+</script>
+</body>
+</html>
