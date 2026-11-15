@@ -53,19 +53,23 @@ h1 span{color:var(--lime)}
 .stat b{display:block;font-family:var(--disp);font-size:34px;font-weight:700;color:var(--lime);line-height:1}
 .stat small{color:var(--muted);font-size:12.5px}
 
-.timer{position:sticky;top:8px;z-index:5;background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:0 0 14px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:grid;grid-template-columns:auto 1fr;gap:6px 14px;align-items:center}
-.tdisp{font-family:var(--disp);font-weight:800;font-size:56px;line-height:1;color:var(--lime);font-variant-numeric:tabular-nums;grid-row:span 2}
-.tbtns{display:flex;gap:8px;flex-wrap:wrap}
+.timer{position:sticky;top:8px;z-index:5;background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:0 0 14px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:grid;grid-template-columns:1fr;gap:10px;justify-items:center}
+.trow{display:flex;align-items:center;justify-content:center;gap:16px}
+.tdisp{font-family:var(--disp);font-weight:800;font-size:56px;line-height:1;color:var(--lime);font-variant-numeric:tabular-nums;min-width:2.6em;text-align:center}
+.tadj{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);font:600 28px/1 var(--ui);cursor:pointer;display:grid;place-items:center;padding:0}
+.tadj:active{transform:scale(.95)}
+.tadj:disabled{opacity:.4;cursor:default}
+.tbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .tbtns button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:8px 14px;font:600 14px var(--ui);cursor:pointer}
 .tbtns button.primary{background:var(--lime);color:#0d1a2b;border-color:var(--lime)}
 .tbtns button:disabled{opacity:.4;cursor:default}
-.tbar{grid-column:1/-1;height:6px;border-radius:99px;background:var(--bg);overflow:hidden}
+.tbar{width:100%;height:6px;border-radius:99px;background:var(--bg);overflow:hidden}
 .tbar i{display:block;height:100%;width:100%;background:var(--lime);transition:width .25s linear}
 .timer.over{border-color:var(--orange);animation:flash .7s ease-in-out infinite alternate}
 .timer.over .tdisp{color:var(--orange)}
 .timer.over .tbar i{background:var(--orange)}
 @keyframes flash{from{background:var(--card2)}to{background:#4a2a18}}
-@media(max-width:420px){.tdisp{font-size:46px}}
+@media(max-width:420px){.tdisp{font-size:46px}.trow{gap:10px}}
 
 .filter{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none}
 .filter::-webkit-scrollbar{display:none}
@@ -79,12 +83,9 @@ h1 span{color:var(--lime)}
 @media(min-width:700px){.grid{grid-template-columns:1fr 1fr}}
 .game{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;position:relative;transition:opacity .2s,border-color .2s}
 .game.dim{opacity:.38}
-.game.done{border-color:var(--lime)}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .num{font-family:var(--disp);font-weight:700;font-size:22px;letter-spacing:.04em}
 .num small{color:var(--muted);font-size:13px;font-weight:600;margin-left:6px;letter-spacing:.08em;text-transform:uppercase;font-family:var(--ui)}
-.check{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);background:transparent;color:transparent;cursor:pointer;font-size:15px;display:grid;place-items:center}
-.done .check{background:var(--lime);border-color:var(--lime);color:#0d1a2b}
 .court{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 8px}
 .team{display:flex;flex-direction:column;gap:6px;align-items:stretch}
 .vs{font-family:var(--disp);font-weight:800;color:var(--orange);font-size:18px}
@@ -97,8 +98,6 @@ h1 span{color:var(--lime)}
 .pause .mini{display:inline-flex;align-items:center;gap:5px;color:var(--text);font-weight:500}
 .pause .mini span{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;color:#0d1a2b}
 .pause .mini.hl{outline:2px solid var(--orange);border-radius:999px;padding-right:6px}
-.foot{margin-top:26px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.reset{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 12px;font:500 13px var(--ui);cursor:pointer}
 </style>
 </head>
 <body>
@@ -119,7 +118,11 @@ h1 span{color:var(--lime)}
   </section>
 
   <section class="timer" id="timer" aria-label="Timer">
-    <div class="tdisp" id="tdisp" role="timer" aria-live="off">15:00</div>
+    <div class="trow">
+      <button class="tadj" id="tminus" aria-label="Decrease time by 1 minute">−</button>
+      <div class="tdisp" id="tdisp" role="timer" aria-live="off">15:00</div>
+      <button class="tadj" id="tplus" aria-label="Increase time by 1 minute">+</button>
+    </div>
     <div class="tbtns">
       <button class="primary" id="tstart">Start</button>
       <button id="tstop" disabled>Stop</button>
@@ -141,11 +144,6 @@ h1 span{color:var(--lime)}
   <nav class="filter" id="filter" aria-label="Choose player"></nav>
   <div class="info" id="info"></div>
   <main class="grid" id="grid"></main>
-
-  <div class="foot">
-    <span>Tip: tick a game once it has been played.</span>
-    <button class="reset" id="reset">Reset ticks</button>
-  </div>
   </div>
 </div>
 
@@ -160,16 +158,16 @@ const SCHEDULES={
      [[5,6],[1,3]],[[2,4],[1,5]],[[1,6],[2,3]],[[2,5],[3,4]],[[4,6],[1,5]]]
 };
 const $=id=>document.getElementById(id);
-let N=0, players=[], inputs=Array(6).fill(""), sel=0, done={}, GAMES=[], ALL=[];
+let N=0, players=[], inputs=Array(6).fill(""), sel=0, GAMES=[], ALL=[];
+// Names are remembered in this browser, also after a reload.
 try{
   const s=JSON.parse(localStorage.getItem("spielplan-v3")||"null");
   if(s){
     if(Array.isArray(s.inputs))inputs=Array.from({length:6},(_,i)=>typeof s.inputs[i]==="string"?s.inputs[i].slice(0,14):"");
     if(Array.isArray(s.players)&&s.players.length>=4&&s.players.length<=6&&s.players.every(x=>typeof x==="string")){players=s.players;N=players.length}
-    if(s.done&&typeof s.done==="object")done=s.done;
   }
 }catch(e){}
-function save(){try{localStorage.setItem("spielplan-v3",JSON.stringify({inputs,players,done}))}catch(e){}}
+function save(){try{localStorage.setItem("spielplan-v3",JSON.stringify({inputs,players}))}catch(e){}}
 function applyN(){GAMES=N?SCHEDULES[N]:[];ALL=Array.from({length:N},(_,i)=>i+1)}
 applyN();
 
@@ -205,7 +203,7 @@ function generate(){
   const f=filled();
   if(f.length<4){setMsg("Please enter at least 4 names.",true);return}
   if(new Set(f.map(s=>s.toLowerCase())).size!==f.length){setMsg("Each name may only appear once.",true);return}
-  players=f;N=f.length;sel=0;done={};applyN();save();setMsg("",false);showPlan();render();
+  players=f;N=f.length;sel=0;applyN();save();setMsg("",false);showPlan();render();
 }
 
 // ---- Fairness figures, calculated directly from the schedule ----
@@ -252,9 +250,8 @@ function renderGrid(){
   document.getElementById("grid").innerHTML=GAMES.map(([a,b],k)=>{
     const pl=[...a,...b], pa=ALL.filter(x=>!pl.includes(x));
     const dim=sel&&!pl.includes(sel);
-    return `<article class="game${dim?' dim':''}${done[k]?' done':''}">
-      <div class="top"><div class="num">Game ${k+1}<small>${k+1} / ${GAMES.length}</small></div>
-        <button class="check" data-k="${k}" aria-label="Game ${k+1} played">✓</button></div>
+    return `<article class="game${dim?' dim':''}">
+      <div class="top"><div class="num">Game ${k+1}<small>${k+1} / ${GAMES.length}</small></div></div>
       <div class="court">
         <div class="team">${a.map(i=>pill(i,i===sel)).join("")}</div>
         <div class="vs">VS</div>
@@ -262,16 +259,34 @@ function renderGrid(){
       </div>
       ${pa.length?`<div class="pause"><span class="tag">Sitting out</span>${pa.map(i=>mini(i,i===sel)).join("")}</div>`:""}
     </article>`}).join("");
-  document.querySelectorAll(".check").forEach(b=>b.onclick=()=>{const k=b.dataset.k;done[k]=!done[k];save();renderGrid()});
 }
 function render(){renderStats();renderFilter();renderInfo();renderGrid()}
-document.getElementById("reset").onclick=()=>{done={};save();renderGrid()};
 $("gen").onclick=generate;
 renderNames();showPlan();if(N){render();hint()}
 
-// ---- Timer (15 minutes, timestamp-based, does not drift in a throttled tab) ----
-const DUR=15*60*1000;
-let remaining=DUR, endAt=0, iv=null, actx=null, au=null, auUrl=null, auOk=false;
+// ---- Timer (adjustable, timestamp-based, remembered across reloads) ----
+const MIN=60*1000, MAX=99*60*1000, TKEY="pickleball-timer-v1";
+let DUR=15*60*1000, remaining=DUR, endAt=0, iv=null, actx=null, au=null, auUrl=null, auOk=false;
+let resumeRun=false, wasOver=false;
+try{
+  const t=JSON.parse(localStorage.getItem(TKEY)||"null");
+  if(t&&typeof t==="object"){
+    if(Number.isFinite(t.dur)&&t.dur>=MIN&&t.dur<=MAX)DUR=Math.round(t.dur/1000)*1000;
+    remaining=DUR;
+    if(Number.isFinite(t.remaining))remaining=Math.min(MAX,Math.max(0,Math.round(t.remaining/1000)*1000));
+    if(t.running&&Number.isFinite(t.endAt)){endAt=t.endAt;remaining=Math.min(MAX,Math.max(0,endAt-Date.now()));resumeRun=true}
+    else if(t.over&&remaining<=0)wasOver=true;
+  }
+}catch(e){}
+function saveTimer(){
+  try{localStorage.setItem(TKEY,JSON.stringify({
+    dur:DUR,
+    remaining:iv!==null?Math.max(0,endAt-Date.now()):remaining,
+    running:iv!==null,
+    endAt:iv!==null?endAt:0,
+    over:$("timer").classList.contains("over")
+  }))}catch(e){}
+}
 // Alarm as a real audio file: silence until the deadline, then the sound "round_end.wav"
 // (or 3 beeps if that file is missing). Because the phone treats it like background music,
 // the sound can play even when the screen is locked.
@@ -351,10 +366,12 @@ function beep(){
 function showTimer(){
   const sec=Math.ceil(remaining/1000), m=String(Math.floor(sec/60)).padStart(2,"0"), s=String(sec%60).padStart(2,"0");
   $("tdisp").textContent=m+":"+s;
-  $("tfill").style.width=(remaining/DUR*100)+"%";
-  const running=iv!==null;
+  $("tfill").style.width=(Math.min(1,remaining/DUR)*100)+"%";
+  const running=iv!==null, base=remaining>0?remaining:DUR;
   $("tstart").disabled=running;
   $("tstop").disabled=!running;
+  $("tminus").disabled=base<=MIN;
+  $("tplus").disabled=base>=MAX;
   $("tstart").textContent=(!running&&remaining<DUR&&remaining>0)?"Resume":"Start";
 }
 function tick(){
@@ -363,9 +380,24 @@ function tick(){
     remaining=0;clearInterval(iv);iv=null;
     $("timer").classList.add("over");
     if(!auOk)beep();try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}
+    saveTimer();
   }
   showTimer();
 }
+// + / - change the time by one minute (also while running)
+function adjust(d){
+  const idle=iv===null&&(remaining<=0||remaining===DUR);
+  const base=remaining>0?remaining:DUR;
+  const nr=Math.min(MAX,Math.max(MIN,base+d));
+  if(nr===base&&remaining>0)return;
+  $("timer").classList.remove("over");
+  remaining=nr;
+  if(idle||nr>DUR)DUR=nr;
+  if(iv!==null){endAt=Date.now()+remaining;startAlarmAudio()}
+  showTimer();saveTimer();
+}
+$("tminus").onclick=()=>adjust(-MIN);
+$("tplus").onclick=()=>adjust(MIN);
 $("tstart").onclick=()=>{
   if(iv!==null)return;
   try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume&&actx.resume()}catch(e){}
@@ -374,17 +406,28 @@ $("tstart").onclick=()=>{
   endAt=Date.now()+remaining;
   iv=setInterval(tick,250);
   startAlarmAudio();
-  showTimer();
+  showTimer();saveTimer();
 };
 $("tstop").onclick=()=>{
   if(iv===null)return;
-  remaining=Math.max(0,endAt-Date.now());
-  clearInterval(iv);iv=null;stopAlarmAudio();showTimer();
+  remaining=Math.ceil(Math.max(0,endAt-Date.now())/1000)*1000;
+  clearInterval(iv);iv=null;stopAlarmAudio();showTimer();saveTimer();
 };
 $("treset").onclick=()=>{
   clearInterval(iv);iv=null;stopAlarmAudio();remaining=DUR;
-  $("timer").classList.remove("over");showTimer();
+  $("timer").classList.remove("over");showTimer();saveTimer();
 };
+// After a reload the browser blocks sound until the next tap: re-arm the alarm then.
+document.addEventListener("pointerdown",()=>{
+  if(iv!==null&&!auOk){
+    try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume&&actx.resume()}catch(e){}
+    startAlarmAudio();
+  }
+});
+if(resumeRun){
+  if(remaining>0){iv=setInterval(tick,250);startAlarmAudio()}
+  else{$("timer").classList.add("over");saveTimer()}
+}else if(wasOver){$("timer").classList.add("over")}
 showTimer();
 </script>
 </body>
